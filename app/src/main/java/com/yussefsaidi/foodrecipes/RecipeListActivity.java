@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,8 +36,32 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         initRecyclerView();
         initSearchView();
         setSupportActionBar(findViewById(R.id.toolbar));
+        susbscribeObservers();
     }
 
+    private void susbscribeObservers(){
+        mRecipeListViewModel.getViewState().observe(this, new Observer<RecipeListViewModel.ViewState>() {
+            @Override
+            public void onChanged(RecipeListViewModel.ViewState viewState) {
+                if(viewState != null){
+                    switch (viewState){
+                        case RECIPES:
+                            //recipes will show automatically from another observer
+                            break;
+                        case CATEGORIES:
+                            displaySearchCategories();
+                            break;
+                    }
+                }
+            }
+
+
+        });
+    }
+
+    private void displaySearchCategories() {
+        mAdapter.displaySearchCategories();
+    }
 
     private void initRecyclerView(){
         mAdapter = new RecipeRecyclerAdapter(this);
