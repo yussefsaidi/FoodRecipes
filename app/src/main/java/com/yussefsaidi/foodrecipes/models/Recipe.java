@@ -4,32 +4,46 @@ package com.yussefsaidi.foodrecipes.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.util.Arrays;
 
+@Entity(tableName = "recipes")
 public class Recipe implements Parcelable{
 
+    @PrimaryKey
+    @NonNull
     private String recipe_id;
 
+    @ColumnInfo(name = "title")
     private String title;
 
+    @ColumnInfo(name="publisher")
     private String publisher;
 
+    @ColumnInfo(name = "image_url")
     private String image_url;
 
+    @ColumnInfo(name = "social_rank")
     private float social_rank;
 
+    @ColumnInfo(name = "ingredients")
     private String[] ingredients;
 
+    @ColumnInfo(name = "timestamp")
+    private int timestamp;
 
-    public Recipe(@NonNull String recipe_id, String title, String publisher, String[] ingredients,
-                  String image_url, float social_rank) {
+
+    public Recipe(@NonNull String recipe_id, String title, String publisher, String image_url, float social_rank, String[] ingredients, int timestamp) {
+        this.recipe_id = recipe_id;
         this.title = title;
         this.publisher = publisher;
-        this.ingredients = ingredients;
-        this.recipe_id = recipe_id;
         this.image_url = image_url;
         this.social_rank = social_rank;
+        this.ingredients = ingredients;
+        this.timestamp = timestamp;
     }
 
     public Recipe() {
@@ -42,6 +56,7 @@ public class Recipe implements Parcelable{
         image_url = in.readString();
         social_rank = in.readFloat();
         ingredients = in.createStringArray();
+        timestamp = in.readInt();
     }
 
     @Override
@@ -52,6 +67,7 @@ public class Recipe implements Parcelable{
         dest.writeString(image_url);
         dest.writeFloat(social_rank);
         dest.writeStringArray(ingredients);
+        dest.writeInt(timestamp);
     }
 
     @Override
@@ -71,6 +87,9 @@ public class Recipe implements Parcelable{
         }
     };
 
+    public int getTimestamp() { return timestamp; }
+
+    public void setTimestamp(int timestamp) { this.timestamp = timestamp; }
 
     public String getTitle() {
         return title;
@@ -129,6 +148,7 @@ public class Recipe implements Parcelable{
                 ", image_url='" + image_url + '\'' +
                 ", social_rank=" + social_rank +
                 ", ingredients=" + Arrays.toString(ingredients) +
+                ", timestamp=" + timestamp +
                 '}';
     }
 }
