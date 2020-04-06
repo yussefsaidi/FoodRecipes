@@ -3,6 +3,8 @@ package com.yussefsaidi.foodrecipes;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
+
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.Observer;
@@ -17,6 +19,8 @@ import com.yussefsaidi.foodrecipes.util.Resource;
 import com.yussefsaidi.foodrecipes.util.VerticalSpacingItemDecorator;
 import com.yussefsaidi.foodrecipes.viewmodels.RecipeListViewModel;
 import java.util.List;
+
+import static com.yussefsaidi.foodrecipes.viewmodels.RecipeListViewModel.QUERY_EXHAUSTED;
 
 
 public class RecipeListActivity extends BaseActivity implements OnRecipeListener {
@@ -52,7 +56,38 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
                     Log.d(TAG, "onChanged: status: " + listResource.status);
 
                     if(listResource.data != null){
-                        mAdapter.setRecipes(listResource.data);
+                        switch(listResource.status) {
+                            case LOADING: {
+                                if(mRecipeListViewModel.getPageNumber() > 1){
+                                    mAdapter.displayLoading();
+                                }
+                                else{
+                                    mAdapter.displayOnlyLoading();
+                                }
+                                break;
+                            }
+                            case ERROR: {
+                                Log.e(TAG, "onChanged: cannot refresh the cache.");
+                                Log.e(TAG, "onChanged: ERROR message: "+ listResource.message);
+                                Log.e(TAG, "onChanged: status: ERROR, #recipes: "+ listResource.data.size());
+                                mAdapter.hideLoading();
+                                mAdapter.setRecipes(listResource.data);
+                                Toast.makeText(RecipeListActivity.this, listResource.message, Toast.LENGTH_SHORT).show();
+
+                                if(listResource.message.equals(QUERY_EXHAUSTED)){
+                                    mAdapter.setQueryExhausted();
+                                }
+                                break;
+                            }
+
+                            case SUCCESS: {
+                                Log.d(TAG, "onChanged: cache has been refreshed.");
+                                Log.d(TAG, "onChanged: status: SUCCESS, #Recipes: " + listResource.data.size());
+                                mAdapter.hideLoading();
+                                mAdapter.setRecipes(listResource.data);
+                                break;
+                            }
+                        }
                     }
                 }
             }
