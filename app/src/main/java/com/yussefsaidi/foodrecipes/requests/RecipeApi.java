@@ -1,5 +1,8 @@
 package com.yussefsaidi.foodrecipes.requests;
 
+import androidx.lifecycle.LiveData;
+
+import com.yussefsaidi.foodrecipes.requests.responses.ApiResponse;
 import com.yussefsaidi.foodrecipes.requests.responses.RecipeResponse;
 import com.yussefsaidi.foodrecipes.requests.responses.RecipeSearchResponse;
 
@@ -11,16 +14,14 @@ public interface RecipeApi {
 
     // SEARCH
     @GET("api/search")
-    Call<RecipeSearchResponse> searchRecipe(
-            @Query("key") String key,
+    LiveData<ApiResponse<RecipeSearchResponse>> searchRecipe(
             @Query("q") String query,
             @Query("page") String page
     );
 
     // GET RECIPE REQUEST
     @GET("api/get")
-    Call<RecipeResponse> getRecipe(
-            @Query("key") String key,
+    LiveData<ApiResponse<RecipeResponse>> getRecipe(
             @Query("rId") String recipe_id
     );
 }
