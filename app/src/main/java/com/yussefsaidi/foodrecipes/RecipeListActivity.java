@@ -3,24 +3,19 @@ package com.yussefsaidi.foodrecipes;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.yussefsaidi.foodrecipes.adapters.OnRecipeListener;
 import com.yussefsaidi.foodrecipes.adapters.RecipeRecyclerAdapter;
 import com.yussefsaidi.foodrecipes.models.Recipe;
 import com.yussefsaidi.foodrecipes.util.Resource;
-import com.yussefsaidi.foodrecipes.util.Testing;
 import com.yussefsaidi.foodrecipes.util.VerticalSpacingItemDecorator;
 import com.yussefsaidi.foodrecipes.viewmodels.RecipeListViewModel;
-import com.yussefsaidi.foodrecipes.viewmodels.RecipeViewModel;
-
 import java.util.List;
 
 
@@ -40,7 +35,7 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         mRecyclerView = findViewById(R.id.recipe_list);
         mSearchView = findViewById(R.id.search_view);
 
-        mRecipeListViewModel = new ViewModelProvider(this).get(RecipeListViewModel.class);
+        mRecipeListViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(RecipeListViewModel.class);
 
         initRecyclerView();
         initSearchView();
@@ -57,7 +52,7 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
                     Log.d(TAG, "onChanged: status: " + listResource.status);
 
                     if(listResource.data != null){
-                        Testing.printRecipes(listResource.data, "data");
+                        mAdapter.setRecipes(listResource.data);
                     }
                 }
             }
