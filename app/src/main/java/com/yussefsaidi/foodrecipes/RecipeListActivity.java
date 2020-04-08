@@ -53,7 +53,6 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
     }
 
     private void subscribeObservers(){
-
         mRecipeListViewModel.getRecipes().observe(this, new Observer<Resource<List<Recipe>>>() {
             @Override
             public void onChanged(Resource<List<Recipe>> listResource) {
@@ -112,8 +111,6 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
                     }
                 }
             }
-
-
         });
     }
 
@@ -186,6 +183,15 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         searchRecipesApi(category);
     }
 
+    @Override
+    public void onBackPressed() {
+        if(mRecipeListViewModel.getViewState().getValue() == RecipeListViewModel.ViewState.CATEGORIES){
+            super.onBackPressed();
+        }
+        else{
+            mRecipeListViewModel.setViewCategories();
+        }
+    }
 }
 
 
