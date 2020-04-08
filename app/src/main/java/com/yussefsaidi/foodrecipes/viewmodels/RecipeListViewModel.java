@@ -2,6 +2,7 @@ package com.yussefsaidi.foodrecipes.viewmodels;
 
 
 import android.app.Application;
+import android.app.DownloadManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -69,6 +70,13 @@ public class RecipeListViewModel extends AndroidViewModel {
             this.pageNumber = pageNumber;
             this.query = query;
             isQueryExhausted = false;
+            executeSearch();
+        }
+    }
+
+    public void searchNextPage(){
+        if(!isQueryExhausted && !isPerformingQuery){
+            pageNumber++;
             executeSearch();
         }
     }
