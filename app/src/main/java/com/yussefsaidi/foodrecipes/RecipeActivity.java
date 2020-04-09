@@ -4,6 +4,7 @@ package com.yussefsaidi.foodrecipes;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -19,7 +20,7 @@ public class RecipeActivity extends BaseActivity {
     private static final String TAG = "RecipeActivity";
 
     // UI components
-    private AppCompatImageView mRecipeImage;
+    private ImageView mRecipeImage;
     private TextView mRecipeTitle, mRecipeRank;
     private LinearLayout mRecipeIngredientsContainer;
     private ScrollView mScrollView;
