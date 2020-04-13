@@ -4,6 +4,7 @@ package com.yussefsaidi.foodrecipes;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -13,9 +14,13 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.yussefsaidi.foodrecipes.models.Recipe;
 import com.yussefsaidi.foodrecipes.util.Resource;
 import com.yussefsaidi.foodrecipes.viewmodels.RecipeViewModel;
+
+import org.w3c.dom.Text;
 
 public class RecipeActivity extends BaseActivity {
 
@@ -40,7 +45,7 @@ public class RecipeActivity extends BaseActivity {
         mRecipeIngredientsContainer = findViewById(R.id.ingredients_container);
         mScrollView = findViewById(R.id.parent);
 
-        mRecipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
+        mRecipeViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(RecipeViewModel.class);
         getIncomingIntent();
     }
 
@@ -69,6 +74,7 @@ public class RecipeActivity extends BaseActivity {
                                 Log.e(TAG, "onChanged: ERROR message: " + recipeResource.message);
                                 showParent();
                                 showProgressBar(false);
+                                setRecipeProperties(recipeResource.data);
                                 break;
                             }
                             case SUCCESS:{
@@ -76,6 +82,7 @@ public class RecipeActivity extends BaseActivity {
                                 Log.d(TAG, "onChanged: status: SUCCESS, Recipe: " + recipeResource.data.getTitle());
                                 showParent();
                                 showProgressBar(false);
+                                setRecipeProperties(recipeResource.data);
                                 break;
                             }
                         }
@@ -83,6 +90,52 @@ public class RecipeActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private void setRecipeProperties(Recipe recipe){
+
+        if(recipe != null){
+            RequestOptions options = new RequestOptions()
+                    .placeholder(R.drawable.white_background)
+                    .error(R.drawable.white_background);
+
+            Glide.with(this)
+                    .setDefaultRequestOptions(options)
+                    .load(recipe.getImage_url())
+                    .into(mRecipeImage);
+
+            mRecipeTitle.setText(recipe.getTitle());
+            mRecipeRank.setText(String.valueOf(Math.round(recipe.getSocial_rank())));
+
+            setIngredients(recipe);
+        }
+    }
+
+    private void setIngredients(Recipe recipe){
+        mRecipeIngredientsContainer.removeAllViews();
+
+        if(recipe.getIngredients() != null){
+            for(String ingredient: recipe.getIngredients()){
+                TextView textView = new TextView(this);
+                textView.setText(ingredient);
+                textView.setTextSize(15);
+                textView.setLayoutParams(
+                        new LinearLayout.LayoutParams(
+                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT));
+                mRecipeIngredientsContainer.addView(textView);
+            }
+        }
+        else {
+            TextView textView = new TextView(this);
+            textView.setText("Error retrieving ingredients.\nCheck network connection.");
+            textView.setTextSize(15);
+            textView.setLayoutParams(
+                    new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+            mRecipeIngredientsContainer.addView(textView);
+        }
     }
 
 
