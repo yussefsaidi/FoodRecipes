@@ -1,5 +1,6 @@
 ## Food Recipes
 Android app to search for food recipes by ingredient or category.
+Consumes API using Retrofit2 to get recipes, and stores them in local database once viewed.
 
 ## Screenshots
 <p>
